@@ -1,21 +1,36 @@
 from .remote_llm_abstract import RemoteLLM
 import openai
+from typing import List
 
+class RemoteLLMOpenAI(RemoteLLM):
+    model: str = "davinci-codex"
 
-class RemoteLLMOpenAi(RemoteLLM):
-    def __init__(self, host, port, api_key):
-        self.host = host
-        self.port = port
-        self.api_key = api_key
-
-    def generate(self, prompt):
+    def generate(
+            self,
+            prompt: str,
+            temperature: float,
+            top_p: float,
+            max_tokens: int,
+            stop_list: List[str],
+        ) -> str:
         openai.api_key = self.api_key
         response = openai.Completion.create(
-            engine="davinci-codex",
+            engine=self.model,
             prompt=prompt,
-            max_tokens=100
+            temperature=temperature,
+            max_tokens=max_tokens,
         )
         return response.choices[0].text.strip()
+
+    def async_generate(
+            self,
+            prompt: str,
+            temperature: float,
+            top_p: float,
+            max_tokens: int,
+            stop_list: List[str],
+        ) -> str:
+        pass #TODO
     
     def list_models(self):
         return openai.Models.list()

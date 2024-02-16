@@ -1,15 +1,14 @@
+
 from abc import ABC, abstractmethod
-from typing import List, Any
+from typing import Any, List
 from pydantic import BaseModel
 
-class RemoteLLM(ABC, BaseModel):
+class LocalLLM(ABC, BaseModel):
     """
-    Abstract class for remote language model
+    Abstract class for local language model
     """
-    host: str
-    port: str
-    model: str
-    api_key: str
+    model_name_or_path: str
+    device: str = "cuda"
 
     @abstractmethod
     def generate(
@@ -23,7 +22,7 @@ class RemoteLLM(ABC, BaseModel):
         pass
 
     @abstractmethod
-    def async_generate(
+    async def async_generate(
             self,
             prompt: str,
             temperature: float,
@@ -40,5 +39,3 @@ class RemoteLLM(ABC, BaseModel):
     @abstractmethod
     def set_model(self, model_name: str):
         pass
-
-
