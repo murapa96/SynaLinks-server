@@ -9,7 +9,7 @@ from .training_config import DPOTrainingConfig
 from transformers import BitsAndBytesConfig
 
 from trl import DPOTrainer
-from typing import Any
+from typing import Any, List
 
 torch.set_default_device("cuda")
 
@@ -20,14 +20,17 @@ bnb_config = BitsAndBytesConfig(
 )
 
 class EosListStoppingCriteria(StoppingCriteria):
-    def __init__(self, eos_sequence):
-        self.eos_sequence = eos_sequence
+    def __init__(self, eos_sequences: List[List[int]]):
+        self.eos_sequences = eos_sequences
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
         last_ids = input_ids[:,-len(self.eos_sequence):].tolist()
-        return self.eos_sequence in last_ids
+        for eos_sequence in self.eos_sequences:
+            if self.eos_sequence in last_ids:
+                return True
+        return False
 
-class LocalModel(BaseModel):
+class LocalLLMModel(BaseModel):
     model_name_or_path: str
     model: Any
     tokenizer: PreTrainedTokenizerFast
@@ -92,7 +95,7 @@ class LocalModel(BaseModel):
             learning_rate=training_config.learning_rate,
             evaluation_strategy="steps",
             eval_steps=training_config.eval_steps,
-            output_dir=training_config.output_dir,
+            output_dir=output_dir,
             report_to=training_config.report_to,
             lr_scheduler_type=training_config.lr_scheduler_type,
             warmup_steps=training_config.warmup_steps,
