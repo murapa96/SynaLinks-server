@@ -21,6 +21,8 @@ REMOTE_LLM_INSTANCE = RemoteLLMFactory.create_remote_llm(
     api_key=REMOTE_LLM_API_KEY,
 )
 
+#WARNING: ALL THIS COULD CATCH FIRE
+#TODO: Add error handling
 
 @app.get("/v1/embeddings")
 async def embed(request: EmbeddingRequest):
