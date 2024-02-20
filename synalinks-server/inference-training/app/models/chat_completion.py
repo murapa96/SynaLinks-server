@@ -1,10 +1,6 @@
-from typing import Union, Optional, List
+from typing import Optional, List
 
 from pydantic import BaseModel
-
-class EmbeddingRequest(BaseModel):
-    model: str
-    input: Union[str, List[str]]
 
 class ChatMessage(BaseModel):
     role: str

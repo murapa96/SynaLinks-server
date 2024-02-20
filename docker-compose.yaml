@@ -1,0 +1,20 @@
+version: '3'
+services:
+  synalinks-inference-training:
+    image: synalinks-inference-training:0.0.1
+    working_dir: /code
+    build:
+      context: ./synalinks-server/inference-training/
+      dockerfile: Dockerfile
+  synalinks-db:
+    image: falkordb/falkordb:edge
+    container_name: synalinks-db
+    ports:
+      - 6379:6379
+  synalinks-db-browser:
+    image: falkordb/falkordb-browser:edge
+    container_name: synalinks-db-browser
+    depends_on:
+      - synalinks-db
+    ports:
+      - 8001:3000

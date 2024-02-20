@@ -29,6 +29,8 @@ class RemoteLLMTogetherAI(RemoteLLM):
     def async_generate(
             self,
             prompt: str,
+            temperature: float,
+            top_p: float,
             max_tokens: int,
             stop_list: List[str],
         ) -> str:
